@@ -13,7 +13,7 @@ public class databaseConnection implements operationsInterface{
 	public databaseConnection() throws ClassNotFoundException {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/new_sms","root","password123");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/new_sms","root","");
 			stmt = con.createStatement();
 		} catch(SQLException e) {
 			
