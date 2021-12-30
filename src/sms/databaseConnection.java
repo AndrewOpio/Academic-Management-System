@@ -13,7 +13,7 @@ public class databaseConnection implements operationsInterface{
 	public databaseConnection() throws ClassNotFoundException {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/hrrs","root","");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/new_sms","root","password123");
 			stmt = con.createStatement();
 		} catch(SQLException e) {
 			
@@ -26,7 +26,6 @@ public class databaseConnection implements operationsInterface{
 		ResultSet res = null;
 		try {
 			res = stmt.executeQuery(query);
-			con.close();
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -40,28 +39,13 @@ public class databaseConnection implements operationsInterface{
 	//Insert data into the database
 	public void insertData(String query) {
 		try {
-			ResultSet res = stmt.executeQuery(query);
-			con.close();
+			int res = stmt.executeUpdate(query);
 	
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
-	
-	//Searching for data in the database
-	public ResultSet searchData(String query) {
-		ResultSet res = null;
-		try {
-			res = stmt.executeQuery(query);
-			con.close();
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return res;
-	}
+		
 }
 
