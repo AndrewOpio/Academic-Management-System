@@ -15,4 +15,5 @@ The following are the steps to follow in order to run this application;
  
  ## Schema
  
- 
+ ![image](https://user-images.githubusercontent.com/51344005/147788116-3641b09d-51c1-4cd4-8a9c-c6c8783dc502.png)
+
