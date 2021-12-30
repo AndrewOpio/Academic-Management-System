@@ -8,6 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.GridBagLayout;
+import java.awt.HeadlessException;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -20,6 +22,7 @@ import java.beans.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
@@ -35,7 +38,7 @@ public class Login extends JFrame {
     
     
     //Authenticating users
-    public void userAuth(String name, String pass) {
+    public void userAuth(String name, String pass) throws SQLException {
 		btnNewButton.setText("Logging in...");
 
     	if(name.equals("") || pass.equals("")) {
@@ -43,7 +46,6 @@ public class Login extends JFrame {
 			btnNewButton.setText("Login");
 
     	} else {
-    		
     		databaseConnection conn = null;
 			try {
 				conn = new databaseConnection();
@@ -51,19 +53,36 @@ public class Login extends JFrame {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    		String query = "select * from bookings";
+			
+    		String query = "select * from teachers where username='" + name + "'and password='" + pass + "'";
     		ResultSet res = conn.getData(query);
-    		
-    		if(res.equals("")) {
-        		JOptionPane.showMessageDialog(null, "Invalid username or password.");
-    			btnNewButton.setText("Login");
+
+    		if(!res.isBeforeFirst()) {
+        		String query_1 = "select * from students where reg_number='" + name + "'and password='" + pass + "'";
+        		ResultSet res_1 = conn.getData(query_1);
+
+        		if(!res_1.isBeforeFirst()) {
+            		JOptionPane.showMessageDialog(null, "Invalid username or password.");
+        			btnNewButton.setText("Login");
+
+        		} else {
+        			String st_class = null;
+        			if(res_1.next()) {
+        			   st_class = res_1.getString("class");
+        			}
+            		Student studentFrame = new Student(name, st_class);
+            		frame.setVisible(false);
+            		studentFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            		studentFrame.setVisible(true);
+        		}
     			
     		} else {
-        		Main mainFrame = new Main();
+        		Main mainFrame = new Main(name);
         		frame.setVisible(false);
         		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         		mainFrame.setVisible(true);
     		}
+
     	}
     }
     
@@ -90,7 +109,7 @@ public class Login extends JFrame {
 	 */
 	public Login() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 541, 527);
+		setBounds(100, 100, 543, 574);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -176,7 +195,12 @@ public class Login extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String username = textField.getText();
 				String password = passwordField.getText();
-				frame.userAuth(username, password);				
+				try {
+					frame.userAuth(username, password);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}				
 			}
 		});
 

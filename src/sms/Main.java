@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.GridBagConstraints;
@@ -14,6 +15,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import java.awt.Font;
+import java.awt.Color;
+import java.awt.GridLayout;
 
 public class Main extends JFrame {
 
@@ -38,7 +41,7 @@ public class Main extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Main() {
+	public Main(String username) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 551, 395);
 		contentPane = new JPanel();
@@ -46,50 +49,136 @@ public class Main extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		
-	    JPanel panel = new JPanel();
-		contentPane.add(panel, BorderLayout.NORTH);
+	    JPanel controlPanel = new JPanel();
+		contentPane.add(controlPanel, BorderLayout.NORTH);
 		
-		JButton btnNewButton_3 = new JButton("Add student record");
+	    JPanel dataPanel = new JPanel();
+	    dataPanel.setBackground(Color.LIGHT_GRAY);
+		contentPane.add(dataPanel);
+		dataPanel.setLayout(new GridLayout(0, 1, 0, 0));
+
+		viewRecords records = new viewRecords();
+		dataPanel.add(records);
+
+		JButton btnNewButton_3 = new JButton("Add student's records");
 		btnNewButton_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		panel.add(btnNewButton_3);
+		btnNewButton_3.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addRecord addrec = new addRecord();
+				dataPanel.removeAll();
+				dataPanel.revalidate();
+				dataPanel.add(addrec);
+			}
+		});
 		
+		
+		controlPanel.add(btnNewButton_3);
+		
+		JButton btnNewButton_6 = new JButton("Add time");
+		btnNewButton_6.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnNewButton_6.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addTime addtime = new addTime();
+				dataPanel.removeAll();
+				dataPanel.revalidate();
+				dataPanel.add(addtime);
+			}
+		});
+		controlPanel.add(btnNewButton_6);
+
+		JButton btnNewButton_4 = new JButton("Add teacher's records");
+		btnNewButton_4.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnNewButton_4.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addTeachers addteacher = new addTeachers();
+				dataPanel.removeAll();
+				dataPanel.revalidate();
+				dataPanel.add(addteacher);
+			}
+		});
+
+		controlPanel.add(btnNewButton_4);
+
 		JButton btnNewButton_2 = new JButton("Add student results");
 		btnNewButton_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		panel.add(btnNewButton_2);
+		btnNewButton_2.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addResults addres = new addResults();
+				dataPanel.removeAll();
+				dataPanel.revalidate();
+				dataPanel.add(addres);
+			}
+		});
 		
-		JButton btnNewButton_1 = new JButton("View records");
+		controlPanel.add(btnNewButton_2);
+		
+		
+		JButton btnNewButton_7 = new JButton("View timetable");
+		btnNewButton_7.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnNewButton_7.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				viewTimetable time = new viewTimetable();
+				dataPanel.removeAll();
+				dataPanel.revalidate();
+				dataPanel.add(time);
+			}
+		});
+		controlPanel.add(btnNewButton_7);
+
+		JButton btnNewButton_1 = new JButton("View students");
 		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnNewButton_1.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				viewRecords records = new viewRecords();
-				contentPane.add(records);
+				dataPanel.removeAll();
+				dataPanel.revalidate();
+				dataPanel.add(records);
 			}
 		});
-		panel.add(btnNewButton_1);
 		
+		controlPanel.add(btnNewButton_1);
+		
+		JButton btnNewButton_5 = new JButton("View teachers");
+		btnNewButton_5.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		controlPanel.add(btnNewButton_5);
+		btnNewButton_5.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				viewTeachers viewteachers = new viewTeachers();
+				dataPanel.removeAll();
+				dataPanel.revalidate();
+				dataPanel.add(viewteachers);
+			}
+		});
+
 		JButton btnNewButton = new JButton("View results");
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnNewButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				viewResults results = new viewResults();
-				contentPane.add(results);
+				dataPanel.removeAll();
+				dataPanel.revalidate();
+				dataPanel.add(results);
 			}
 		});
-		panel.add(btnNewButton);
+		controlPanel.add(btnNewButton);
 		
-		viewRecords records = new viewRecords();
-		contentPane.add(records);
 		
-		//addResults add = new addResults();
-		//contentPane.add(add);
-
-		//addRecord addrec = new addRecord();
-		//contentPane.add(addrec);
-
-		//viewResults results = new viewResults();
-		//contentPane.add(results);
-
+		if(username.equals("admin")) {
+			btnNewButton_4.setVisible(true);
+			btnNewButton_5.setVisible(true);
+			
+		} else {
+			btnNewButton_4.setVisible(false);
+			btnNewButton_5.setVisible(false);
+		}
+				
 	}
 }

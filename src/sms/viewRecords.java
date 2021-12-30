@@ -1,35 +1,94 @@
 package sms;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JLabel;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
+import java.awt.Color;
 import java.awt.Font;
-import javax.swing.SwingConstants;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.JTable;
+import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Vector;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import java.awt.BorderLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.border.MatteBorder;
-import java.awt.Color;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JPopupMenu;
-import java.awt.Component;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+
+import com.mysql.jdbc.ResultSetMetaData;
 
 public class viewRecords extends JPanel {
 	private JTable table;
 	private JTextField textField;
 	private JButton btnNewButton;
+    private DefaultTableModel tableModel;
+    private TableRowSorter<TableModel> sorter;
+   
+    
+    public void getRecords() {
+		databaseConnection conn = null;
+		try {
+			conn = new databaseConnection();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String query = "select * from students";
+		ResultSet res = conn.getData(query);		
+	    
+	    ResultSetMetaData metaData = null;
+	    Vector<String> columnNames = new Vector<String>();
+	    Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 
+		try {
+			metaData = (ResultSetMetaData) res.getMetaData();
+
+		    // names of columns
+		    int columnCount = 0;
+			columnCount = metaData.getColumnCount();
+			
+		    for (int column = 1; column <= columnCount; column++) {
+				columnNames.add(metaData.getColumnName(column));
+		    }
+	
+		    // data of the table
+			while (res.next()) {
+			    Vector<Object> vector = new Vector<Object>();
+			    for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+			        vector.add(res.getObject(columnIndex));
+			    }
+			    data.add(vector);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
+	    tableModel = new DefaultTableModel(data, columnNames);
+	    sorter = new TableRowSorter<TableModel>(tableModel);
+    }
+
+    
 	/**
 	 * Create the panel.
 	 */
 	public viewRecords() {
+		
+		getRecords();
+		setBackground(SystemColor.controlHighlight);
 		setBorder(null);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
@@ -38,14 +97,11 @@ public class viewRecords extends JPanel {
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
-		String [][] names = {{"Andrew", "20", "18/u/21104/ps"}, {"Jane", "25","18/u/21104/ps"}};
-		String [] cm = {"Name", "Age", "Number"};
-		
 		JLabel lblNewLabel = new JLabel("Students' Records");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 		gbc_lblNewLabel.gridwidth = 7;
-		gbc_lblNewLabel.insets = new Insets(0, 5, 5, 0);
+		gbc_lblNewLabel.insets = new Insets(10, 5, 5, 0);
 		gbc_lblNewLabel.gridx = 0;
 		gbc_lblNewLabel.gridy = 1;
 		add(lblNewLabel, gbc_lblNewLabel);
@@ -69,36 +125,52 @@ public class viewRecords extends JPanel {
 		add(textField, gbc_textField);
 		textField.setColumns(10);
 		
+		textField.getDocument().addDocumentListener(new DocumentListener() {
+
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				sorter.setRowFilter(null);
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+		
+		
 		btnNewButton = new JButton("search");
 		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
 		gbc_btnNewButton.insets = new Insets(10, 0, 10, 5);
 		gbc_btnNewButton.gridx = 2;
 		gbc_btnNewButton.gridy = 2;
+		btnNewButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String text = textField.getText();
+				
+				if(text.length() == 0) {
+					sorter.setRowFilter(null);
+				} else {
+					sorter.setRowFilter(RowFilter.regexFilter(text));
+				}
+			}
+		});
+
 		add(btnNewButton, gbc_btnNewButton);
 		
-		table = new JTable(names, cm);
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"Andrew", "20", "18/u/21104/ps", null, null, null, null},
-				{"Jane", "25", "18/u/21104/ps", null, null, null, null},
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-				{null, null, null, null, null, null, null},
-			},
-			new String[] {
-				"Name", "Age", "Number", "New column", "New column", "New column", "New column"
-			}
-		));
+		table = new JTable();
+		table.setModel(tableModel);
+		table.setRowSorter(sorter);
 		table.setRowSelectionAllowed(false);
 		table.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
