@@ -29,8 +29,8 @@ public class Main extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Main frame = new Main();
-					frame.setVisible(true);
+					//Main frame = new Main();
+					//frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -169,6 +169,20 @@ public class Main extends JFrame {
 			}
 		});
 		controlPanel.add(btnNewButton);
+		
+		JButton btnNewButton_8 = new JButton("Logout");
+		btnNewButton_8.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnNewButton_8.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Login login = new Login();
+        		setVisible(false);
+        		login.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        		login.setVisible(true);
+			}
+		});
+		controlPanel.add(btnNewButton_8);
+
 		
 		
 		if(username.equals("admin")) {

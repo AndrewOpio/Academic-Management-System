@@ -24,8 +24,8 @@ public class Student extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Student frame = new Student();
-					frame.setVisible(true);
+					//Student frame = new Student();
+					//frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -83,6 +83,20 @@ public class Student extends JFrame {
 			}
 		});
 		
+		
+		JButton btnNewButton_3 = new JButton("Logout");
+		btnNewButton_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnNewButton_3.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Login login = new Login();
+        		setVisible(false);
+        		login.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        		login.setVisible(true);
+			}
+		});
+		controlPanel.add(btnNewButton_3);
+
 		controlPanel.add(btnNewButton_1);				
 
 	}
