@@ -158,7 +158,17 @@ public class addTime extends JPanel {
 				String time = textField_2.getText();
 				String st_class = textField_3.getText();
 				
-				addTime(subject, day, time, st_class);
+				if(subject.equals("") || day.equals("") || time.equals("") || st_class.equals("")) {
+					JOptionPane.showMessageDialog(null, "Please add all required fields..");
+
+				} else {
+					addTime(subject, day, time, st_class);
+					
+					textField.setText("");
+					textField_1.setText("");
+					textField_2.setText("");
+					textField_3.setText("");
+				}
 			}
 		});
 		

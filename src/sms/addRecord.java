@@ -31,7 +31,7 @@ public class addRecord extends JPanel {
 
 	
 	//adding records to the database
-	public void addRecords(String fname, String lname, String reg_number, String subject, String age, String gender, String st_class, String pass) {
+	public void addRecords(String fname, String lname, String reg_number, String subject, String age, String gender, String st_class, String pass){
 		databaseConnection conn = null;
 		try {
 			conn = new databaseConnection();
@@ -39,15 +39,32 @@ public class addRecord extends JPanel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String query = "insert into students(first_name, last_name, reg_number, subject, age, gender, class, password) values"
-				+ "('" + fname + "','" + lname + "','" + reg_number + "','" + subject + 
-				"','" + age + "','" + gender + "','" + st_class +"','" + pass + "')";
-		conn.insertData(query);	
 		
-		revalidate();
-		repaint();
+		String query = "select * from students where reg_number='" + reg_number + "'";
+		ResultSet res = conn.getData(query);		
 
-		JOptionPane.showMessageDialog(null, "Student added successfully.");
+		try {
+			if(res.next()) {
+				JOptionPane.showMessageDialog(null, "Student already exists.");
+
+			} else {
+				String query_1 = "insert into students(first_name, last_name, reg_number, subject, age, gender, class, password) values"
+						+ "('" + fname + "','" + lname + "','" + reg_number + "','" + subject + 
+						"','" + age + "','" + gender + "','" + st_class +"','" + pass + "')";
+				conn.insertData(query_1);	
+				
+				revalidate();
+				repaint();
+
+				JOptionPane.showMessageDialog(null, "Student added successfully.");
+			}
+		} catch (HeadlessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 
@@ -248,7 +265,22 @@ public class addRecord extends JPanel {
 				String st_class = textField_6.getText();
 				String pass = textField_7.getText();
 				
-				addRecords(fname, lname, reg_number, subject, age, gender, st_class, pass);
+				if(fname.equals("") || lname.equals("") || reg_number.equals("") || subject.equals("") || age.equals("")
+					||	gender.equals("") || st_class.equals("") || pass.equals("")) {
+					JOptionPane.showMessageDialog(null, "Please add all required fields..");
+
+				} else {
+					addRecords(fname, lname, reg_number, subject, age, gender, st_class, pass);
+					
+					textField.setText("");
+					textField_1.setText("");
+					textField_2.setText("");
+					textField_3.setText("");
+					textField_4.setText("");
+					textField_5.setText("");
+					textField_6.setText("");
+					textField_7.setText("");
+				}
 			}
 		});
 				

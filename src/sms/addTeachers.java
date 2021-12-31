@@ -31,14 +31,31 @@ public class addTeachers extends JPanel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String query = "insert into teachers(first_name, last_name, username, password) values"
-				+ "('" + fname + "','" + lname + "','" + username + "','"  + password + "')";
-		conn.insertData(query);	
 		
-		revalidate();
-		repaint();
+		String query = "select * from teachers where username='" + username + "'";
+		ResultSet res = conn.getData(query);		
 
-		JOptionPane.showMessageDialog(null, "Teacher added successfully.");
+		try {
+			if(res.next()) {
+				JOptionPane.showMessageDialog(null, "Teacher already exists.");
+
+			} else {
+				String query_1 = "insert into teachers(first_name, last_name, username, password) values"
+						+ "('" + fname + "','" + lname + "','" + username + "','"  + password + "')";
+				conn.insertData(query_1);	
+				
+				revalidate();
+				repaint();
+
+				JOptionPane.showMessageDialog(null, "Teacher added successfully.");
+			}
+		} catch (HeadlessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 
@@ -156,7 +173,17 @@ public class addTeachers extends JPanel {
 				String username = textField_2.getText();
 				String password = textField_3.getText();
 				
-				addTeachers(fname, lname, username, password);
+				if(fname.equals("") || lname.equals("") || username.equals("") || password.equals("")) {
+						JOptionPane.showMessageDialog(null, "Please add all required fields..");
+
+				} else {
+					addTeachers(fname, lname, username, password);
+					
+					textField.setText("");
+					textField_1.setText("");
+					textField_2.setText("");
+					textField_3.setText("");
+				}
 			}
 		});
 		

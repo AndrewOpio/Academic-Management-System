@@ -195,7 +195,20 @@ public class addResults extends JPanel {
 				String period = textField_4.getText();
 				String year = textField_5.getText();
 
-			    addResults(reg_number, term, subject, marks, period, year);
+				if(reg_number.equals("") || term.equals("") || subject.equals("") || marks.equals("") || period.equals("")
+						|| year.equals("")) {
+						JOptionPane.showMessageDialog(null, "Please add all required fields..");
+
+				} else {
+					addResults(reg_number, term, subject, marks, period, year);
+					
+					textField.setText("");
+					textField_1.setText("");
+					textField_2.setText("");
+					textField_3.setText("");
+					textField_4.setText("");
+					textField_5.setText("");
+				}
 			}
 		});
 								
